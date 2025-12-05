@@ -1,0 +1,34 @@
+name: Calc GCD
+run-name: gcd(${{ inputs.a }}, ${{ inputs.b }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      a:
+        description: a
+        required: true
+        default: "13"
+      b:
+        description: b
+        required: true
+        default: "8"
+
+permissions:
+  actions: write
+
+jobs:
+  calc-gcd:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          A: ${{ inputs.a }}
+          B: ${{ inputs.b }}
+        run: |
+          if [ "$B" -eq 0 ]; then
+            echo "$A" > $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+          NA=$B
+          NB=$((A % B))
+          gh workflow run gcd.yaml -f a="$NA" -f b="$NB"
